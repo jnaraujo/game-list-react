@@ -1,6 +1,8 @@
 ## Game Search App
 Procure por jogos e veja detalhes sobre eles :)
 
+> A url do projeto é: https://game-list-react.vercel.app/
+
 ## Como rodar o projeto
 1. Clone o repositório
 2. Instale as dependências com `yarn`
