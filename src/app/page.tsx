@@ -9,11 +9,10 @@ import CardSkeleton from "@/components/CardSkeleton"
 import type { AxiosError } from "axios"
 import { errorToMessage } from "@/helpers/error-helper"
 import Error from "@/components/Error"
-import clsx from "clsx"
 
 export default function Home() {
   const [games, setGames] = useState<ApiResponse>([])
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [search, setSearch] = useState<string>("")
   const [platform, setPlatform] = useState<string>("all")
   const [platforms, setPlatforms] = useState<string[]>([])
@@ -58,6 +57,10 @@ export default function Home() {
     })
   }, [games, platform, search])
 
+  const shouldShowGameNotFound =
+    !error && !isLoading && filteredGames.length === 0
+  const shouldShowGameList = !error && !isLoading && filteredGames.length > 0
+
   return (
     <main className="flex min-h-screen flex-col items-center">
       <section className="flex w-full flex-col items-center gap-4 bg-violet-800 px-4 py-16 text-white">
@@ -76,32 +79,35 @@ export default function Home() {
         </div>
       </section>
 
-      <section
-        className={clsx("container my-8 grid gap-12", {
-          "grid-cols-1": error,
-          "md:grid-cols-3": !error,
-        })}
-      >
+      <section className="container my-8 grid gap-12 md:grid-cols-3">
         {isLoading ? (
           <>
             <CardSkeleton />
             <CardSkeleton />
             <CardSkeleton />
           </>
-        ) : (
-          filteredGames.map((game, index) => (
-            <Card
-              key={index}
-              title={game.title}
-              description={game.short_description}
-              genre={game.genre}
-              image={game.thumbnail}
-              platform={game.platform}
-              releaseDate={new Date(game.release_date)}
-              url={game.freetogame_profile_url}
-            />
-          ))
-        )}
+        ) : null}
+
+        {shouldShowGameList
+          ? filteredGames.map((game, index) => (
+              <Card
+                key={index}
+                title={game.title}
+                description={game.short_description}
+                genre={game.genre}
+                image={game.thumbnail}
+                platform={game.platform}
+                releaseDate={new Date(game.release_date)}
+                url={game.freetogame_profile_url}
+              />
+            ))
+          : null}
+
+        {shouldShowGameNotFound ? (
+          <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform text-center text-lg text-zinc-800">
+            Nenhum jogo encontrado :(
+          </p>
+        ) : null}
         {error && <Error message={error} />}
       </section>
     </main>
