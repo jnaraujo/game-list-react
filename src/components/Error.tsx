@@ -5,7 +5,7 @@ interface Props {
 }
 export default function Error({ message }: Props) {
   return (
-    <div className="mx-auto flex min-h-[50vh] w-72 flex-col items-center justify-center gap-2 text-center">
+    <div className="absolute left-1/2 mx-auto flex min-h-[50vh] w-72 -translate-x-1/2 transform flex-col items-center justify-center gap-2 text-center">
       <Image
         src="/cat.svg"
         alt="Gato comendo a página"
