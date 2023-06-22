@@ -6,7 +6,7 @@ interface SearchInputProps {
 
 export default function SearchInput({ onChange }: SearchInputProps) {
   return (
-    <div className="flex h-8 w-full items-center justify-center gap-2 rounded-md bg-zinc-50 px-2">
+    <div className="flex h-9 w-full items-center justify-center gap-2 rounded-md bg-zinc-50 px-2">
       <Search size={24} className="text-zinc-400" />
       <input
         type="text"
