@@ -15,7 +15,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [search, setSearch] = useState<string>("")
   const [platform, setPlatform] = useState<string>("all")
-  const [platforms, setPlatforms] = useState<string[]>([])
+  const [genres, setGenres] = useState<string[]>([])
   const [error, setError] = useState<string>("")
 
   useEffect(() => {
@@ -26,11 +26,8 @@ export default function Home() {
       .then((res) => {
         setGames(res.data)
 
-        const platforms = res.data
-          .map((game) => game.platform.split(","))
-          .flat()
-
-        setPlatforms([...new Set(platforms)])
+        const genres = res.data.map((game) => game.genre)
+        setGenres([...new Set(genres)])
       })
       .catch((err: AxiosError) => {
         setError(errorToMessage(err))
@@ -52,7 +49,7 @@ export default function Home() {
     return games.filter((game) => {
       return (
         game.title.toLowerCase().includes(search.toLowerCase()) &&
-        (platform === "all" || game.platform.includes(platform))
+        (platform === "all" || game.genre.includes(platform))
       )
     })
   }, [games, platform, search])
@@ -75,7 +72,7 @@ export default function Home() {
 
         <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
           <SearchInput onChange={handleSearch} />
-          <Filter items={platforms} onChange={handlePlatform} />
+          <Filter items={genres} onChange={handlePlatform} />
         </div>
       </section>
 
