@@ -1,6 +1,7 @@
 import Footer from "@/components/Footer"
 import "./globals.css"
 import { Inter } from "next/font/google"
+import Providers from "@/components/Providers"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
@@ -17,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} antialiased`}>
       <body className="bg-zinc-50">
-        {children}
+        <Providers>{children}</Providers>
         <Footer />
       </body>
     </html>
