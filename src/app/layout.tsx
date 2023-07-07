@@ -1,8 +1,6 @@
-import Footer from "@/components/Layouts/Footer"
 import "./globals.css"
 import { Inter } from "next/font/google"
 import Providers from "@/components/Providers"
-import Navbar from "@/components/Layouts/Navbar"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
@@ -19,11 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} antialiased`}>
       <body className="bg-zinc-50">
-        <Providers>
-          <Navbar />
-          {children}
-          <Footer />
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   )
