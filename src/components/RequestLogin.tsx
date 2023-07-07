@@ -1,7 +1,10 @@
 import Link from "next/link"
 import Button from "./Button"
+import { useModalContext } from "@/contexts/ModalContext"
 
 export default function RequestLogin() {
+  const { closeModal } = useModalContext()
+
   return (
     <section>
       <div className="mb-4 space-y-2">
@@ -16,10 +19,14 @@ export default function RequestLogin() {
       </div>
       <div className="flex w-full gap-2">
         <Button asChild className="flex-1" secondary>
-          <Link href="/auth/register">Crie uma conta</Link>
+          <Link href="/auth/register" onClick={closeModal}>
+            Crie uma conta
+          </Link>
         </Button>
         <Button asChild className="flex-1">
-          <Link href="/auth/login">Fazer login</Link>
+          <Link href="/auth/login" onClick={closeModal}>
+            Fazer login
+          </Link>
         </Button>
       </div>
     </section>
