@@ -3,7 +3,6 @@ import Image from "next/image"
 import Link from "next/link"
 import Rating from "./Rating"
 import { useAuthContext } from "@/contexts/AuthContext"
-import LoginForm from "./Auth/LoginForm"
 import { useModalContext } from "@/contexts/ModalContext"
 import {
   setGameUserRating,
@@ -13,6 +12,7 @@ import {
 } from "@/libs/storage"
 import { useEffect, useState } from "react"
 import Like from "./Like"
+import RequestLogin from "./RequestLogin"
 
 interface CardProps {
   id: number
@@ -52,7 +52,7 @@ export default function Card({
 
   function onRatingClick(rating: number) {
     if (!user) {
-      openModal(<LoginForm />)
+      openModal(<RequestLogin />)
       return
     }
 
@@ -62,7 +62,7 @@ export default function Card({
 
   function onLikeClick(isLiked: boolean) {
     if (!user) {
-      openModal(<LoginForm />)
+      openModal(<RequestLogin />)
       return
     }
 

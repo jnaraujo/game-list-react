@@ -1,17 +1,11 @@
 "use client"
 
 import { useAuthContext } from "@/contexts/AuthContext"
-import { useModalContext } from "@/contexts/ModalContext"
-import LoginForm from "../Auth/LoginForm"
 import { signOut } from "@/libs/auth"
+import Link from "next/link"
 
 export default function Navbar() {
-  const { openModal } = useModalContext()
   const { user } = useAuthContext()
-
-  function handleLogin() {
-    openModal(<LoginForm />)
-  }
 
   function handleLogout() {
     signOut()
@@ -28,9 +22,9 @@ export default function Navbar() {
             </button>
           </div>
         ) : (
-          <button className="text-zinc-50" onClick={handleLogin}>
+          <Link className="text-zinc-50" href="/auth/login">
             Login
-          </button>
+          </Link>
         )}
       </div>
     </nav>

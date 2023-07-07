@@ -1,10 +1,12 @@
+"use client"
+
 import { useForm } from "react-hook-form"
 import Button from "../Button"
 import { signIn } from "@/libs/auth"
 import { useState } from "react"
 import { FirebaseError } from "firebase/app"
-import { useModalContext } from "@/contexts/ModalContext"
-import RegisterForm from "./RegisterForm"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 interface FormData {
   email: string
@@ -13,7 +15,7 @@ interface FormData {
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false)
-  const { openModal, closeModal } = useModalContext()
+  const Router = useRouter()
 
   const [error, setError] = useState<string | null>(null)
   const {
@@ -27,7 +29,7 @@ export default function LoginForm() {
     setLoading(true)
     try {
       await signIn(data.email, data.password)
-      closeModal()
+      Router.push("/")
     } catch (error) {
       if (error instanceof FirebaseError) {
         setError("Usuário não encontrado.")
@@ -35,10 +37,6 @@ export default function LoginForm() {
     } finally {
       setLoading(false)
     }
-  }
-
-  function handleRegister() {
-    openModal(<RegisterForm />)
   }
 
   return (
@@ -88,9 +86,9 @@ export default function LoginForm() {
 
       <p className="text-sm">
         Não tem uma conta?{" "}
-        <button className="text-blue-500" onClick={handleRegister}>
+        <Link className="text-blue-500" href="/auth/register">
           Crie uma agora.
-        </button>
+        </Link>
       </p>
     </div>
   )

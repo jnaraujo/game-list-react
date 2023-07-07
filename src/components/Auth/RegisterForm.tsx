@@ -1,10 +1,12 @@
+"use client"
+
 import { useForm } from "react-hook-form"
 import Button from "../Button"
 import { signUp } from "@/libs/auth"
 import { useState } from "react"
 import { FirebaseError } from "firebase/app"
-import { useModalContext } from "@/contexts/ModalContext"
-import LoginForm from "./LoginForm"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 interface FormData {
   email: string
@@ -12,8 +14,8 @@ interface FormData {
 }
 
 export default function RegisterForm() {
+  const Router = useRouter()
   const [loading, setLoading] = useState(false)
-  const { closeModal, openModal } = useModalContext()
   const [error, setError] = useState<string | null>(null)
   const {
     handleSubmit,
@@ -26,7 +28,7 @@ export default function RegisterForm() {
     setLoading(true)
     try {
       await signUp(data.email, data.password)
-      closeModal()
+      Router.push("/")
     } catch (error) {
       if (error instanceof FirebaseError) {
         if (error.code === "auth/email-already-in-use") {
@@ -36,10 +38,6 @@ export default function RegisterForm() {
     } finally {
       setLoading(false)
     }
-  }
-
-  function handleLogin() {
-    openModal(<LoginForm />)
   }
 
   return (
@@ -93,9 +91,9 @@ export default function RegisterForm() {
 
       <p className="text-sm">
         Já tem uma conta?{" "}
-        <button className="text-blue-500" onClick={handleLogin}>
+        <Link className="text-blue-500" href="/auth/login">
           Faça login.
-        </button>
+        </Link>
       </p>
     </div>
   )
