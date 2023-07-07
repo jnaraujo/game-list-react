@@ -5,8 +5,14 @@ import Rating from "./Rating"
 import { useAuthContext } from "@/contexts/AuthContext"
 import LoginForm from "./Auth/LoginForm"
 import { useModalContext } from "@/contexts/ModalContext"
-import { setGameUserRating, getGameUserRating } from "@/libs/storage"
+import {
+  setGameUserRating,
+  getGameUserRating,
+  setGameUserLike,
+  getGameUserLike,
+} from "@/libs/storage"
 import { useEffect, useState } from "react"
+import Like from "./Like"
 
 interface CardProps {
   id: number
@@ -32,15 +38,18 @@ export default function Card({
   const { user } = useAuthContext()
   const { openModal } = useModalContext()
   const [rating, setRating] = useState(-1)
+  const [liked, setLiked] = useState(false)
 
   useEffect(() => {
     console.log("useEffect")
 
-    getGameUserRating(gameId)
-      .then((rating) => {
-        setRating(rating || -1)
-      })
-      .catch((err) => console.error(err))
+    getGameUserRating(gameId).then((rating) => {
+      setRating(rating || -1)
+    })
+
+    getGameUserLike(gameId).then((liked) => {
+      setLiked(liked || false)
+    })
   }, [gameId])
 
   function onRatingClick(rating: number) {
@@ -51,6 +60,16 @@ export default function Card({
 
     setGameUserRating(gameId, rating)
     setRating(rating)
+  }
+
+  function onLikeClick(isLiked: boolean) {
+    if (!user) {
+      openModal(<LoginForm />)
+      return
+    }
+
+    setGameUserLike(gameId, isLiked)
+    setLiked(isLiked)
   }
 
   return (
@@ -68,6 +87,10 @@ export default function Card({
       <span className="absolute left-1 top-1 hidden rounded-md bg-zinc-800 px-2 text-xs text-white shadow-sm md:block">
         {platform}
       </span>
+
+      <div className="absolute right-1 top-1">
+        <Like isLiked={liked} onClick={onLikeClick} />
+      </div>
 
       <div className="flex flex-1 flex-col justify-between p-2">
         <div>
