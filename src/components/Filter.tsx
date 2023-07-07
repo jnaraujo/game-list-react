@@ -15,7 +15,7 @@ export default function Filter({ onChange, items }: FilterProps) {
     <Select.Root onValueChange={onChange} defaultValue="all">
       <Select.Trigger
         className={clsx(
-          "flex h-9 w-full cursor-pointer items-center justify-center gap-1 rounded-md bg-zinc-50 px-2 py-1 text-zinc-500 hover:bg-zinc-100 sm:w-60 md:w-32",
+          "flex h-9 w-full cursor-pointer items-center justify-center gap-1 rounded-md bg-zinc-50 px-2 py-1 text-zinc-500 hover:bg-zinc-100 sm:w-60 md:w-40",
         )}
         aria-label="Food"
       >
