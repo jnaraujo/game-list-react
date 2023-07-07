@@ -1,12 +1,9 @@
 import { getDatabase, ref, get, set, remove } from "firebase/database"
 import app from "./firebase"
-import { getAuth } from "firebase/auth"
 
 const db = getDatabase(app)
-const auth = getAuth(app)
 
-export async function getGameUserRating(gameId: number) {
-  const userId = auth.currentUser?.uid
+export async function getGameUserRating(gameId: number, userId: string) {
   const ratingRef = ref(db, `ratings/${userId}/${gameId}`)
 
   const snapshot = await get(ratingRef)
@@ -18,8 +15,7 @@ export async function getGameUserRating(gameId: number) {
   return null
 }
 
-export async function getUserRatedGames() {
-  const userId = auth.currentUser?.uid
+export async function getUserRatedGames(userId: string) {
   const ratingRef = ref(db, `ratings/${userId}`)
 
   const snapshot = await get(ratingRef)
@@ -31,15 +27,17 @@ export async function getUserRatedGames() {
   return null
 }
 
-export async function setGameUserRating(gameId: number, rating: number) {
-  const userId = auth.currentUser?.uid
+export async function setGameUserRating(
+  gameId: number,
+  rating: number,
+  userId: string,
+) {
   const ratingRef = ref(db, `ratings/${userId}/${gameId}`)
 
   await set(ratingRef, rating)
 }
 
-export async function getGameUserLike(gameId: number) {
-  const userId = auth.currentUser?.uid
+export async function getGameUserLike(gameId: number, userId: string) {
   const likeRef = ref(db, `likes/${userId}/${gameId}`)
 
   const snapshot = await get(likeRef)
@@ -51,8 +49,11 @@ export async function getGameUserLike(gameId: number) {
   return null
 }
 
-export async function setGameUserLike(gameId: number, like: boolean) {
-  const userId = auth.currentUser?.uid
+export async function setGameUserLike(
+  gameId: number,
+  like: boolean,
+  userId: string,
+) {
   const likeRef = ref(db, `likes/${userId}/${gameId}`)
 
   if (!like) {
@@ -62,8 +63,7 @@ export async function setGameUserLike(gameId: number, like: boolean) {
   await set(likeRef, like)
 }
 
-export async function getUserLikedGames() {
-  const userId = auth.currentUser?.uid
+export async function getUserLikedGames(userId: string) {
   const likeRef = ref(db, `likes/${userId}`)
   const snapshot = await get(likeRef)
   if (snapshot.exists()) {

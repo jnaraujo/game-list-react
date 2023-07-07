@@ -11,9 +11,10 @@ import Cards from "@/components/Layouts/Cards"
 import FavoriteFilter from "@/components/FavoriteFilter"
 import { getUserLikedGames, getUserRatedGames } from "@/libs/storage"
 import SortByStars from "@/components/SortByStars"
-import { get } from "http"
+import { useAuthContext } from "@/contexts/AuthContext"
 
 export default function Home() {
+  const { user } = useAuthContext()
   const [games, setGames] = useState<ApiResponse>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [search, setSearch] = useState<string>("")
@@ -31,20 +32,26 @@ export default function Home() {
   const [error, setError] = useState<string>("")
 
   useEffect(() => {
-    getUserLikedGames().then((res) => {
+    if (!user) {
+      return
+    }
+
+    getUserLikedGames(user?.uid).then((res) => {
       if (res === null) {
         res = {}
       }
       setFavorites(res)
     })
 
-    getUserRatedGames().then((res) => {
+    getUserRatedGames(user.uid).then((res) => {
       if (res === null) {
         res = {}
       }
       setRatedGames(res)
     })
+  }, [user])
 
+  useEffect(() => {
     setIsLoading(true)
     setError("")
     api
@@ -68,7 +75,11 @@ export default function Home() {
   }
 
   function handleFavoriteFilter(isFavorite: boolean) {
-    getUserLikedGames().then((res) => {
+    if (!user) {
+      return
+    }
+
+    getUserLikedGames(user.uid).then((res) => {
       if (res === null) {
         res = {}
       }
@@ -78,7 +89,11 @@ export default function Home() {
   }
 
   function handleSortByStars(sort: "asc" | "desc" | null) {
-    getUserRatedGames().then((res) => {
+    if (!user) {
+      return
+    }
+
+    getUserRatedGames(user.uid).then((res) => {
       if (res === null) {
         res = {}
       }

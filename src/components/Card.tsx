@@ -53,7 +53,7 @@ export default function Card({
       return
     }
 
-    setGameUserRating(gameId, rating)
+    setGameUserRating(gameId, rating, user.uid)
     setRating(rating)
   }
 
@@ -63,7 +63,7 @@ export default function Card({
       return
     }
 
-    setGameUserLike(gameId, isLiked)
+    setGameUserLike(gameId, isLiked, user.uid)
     setLiked(isLiked)
   }
 
