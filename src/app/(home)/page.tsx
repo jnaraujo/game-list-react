@@ -1,7 +1,7 @@
 "use client"
 import { ApiResponse } from "@/@types/api"
-import Filter from "../components/Filter"
-import SearchInput from "../components/SearchInput"
+import Filter from "../../components/Filter"
+import SearchInput from "../../components/SearchInput"
 import api from "@/libs/api"
 import { useEffect, useMemo, useState } from "react"
 import type { AxiosError } from "axios"
@@ -48,6 +48,9 @@ export default function Home() {
   function handleFavorite(isFavorite: boolean) {
     if (isFavorite) {
       getUserLikedGames().then((res) => {
+        if (res === null) {
+          res = {}
+        }
         setFavorites(res)
       })
     } else {
@@ -64,7 +67,7 @@ export default function Home() {
       return (
         game.title.toLowerCase().includes(search.toLowerCase()) &&
         (platform === "all" || game.genre.includes(platform)) &&
-        (favorites == null || favorites[game.id])
+        (favorites === null || favorites[game.id])
       )
     })
   }, [games, platform, search, favorites])
