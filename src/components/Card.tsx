@@ -68,7 +68,7 @@ export default function Card({
   }
 
   return (
-    <div className="group relative flex overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 ease-in-out hover:shadow-lg md:flex-col">
+    <div className="group relative flex h-[200px] w-full overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 ease-in-out hover:shadow-lg md:h-[400px] md:w-[350px] md:flex-col">
       <div className="overflow-hidden">
         <Image
           src={image}
@@ -96,7 +96,7 @@ export default function Card({
             <Rating count={5} onClick={onRatingClick} rating={rating} />
           </div>
           <h3 className="mt-1 line-clamp-2 font-bold text-zinc-900">{title}</h3>
-          <p className="line-clamp-4 text-sm text-zinc-500">{description}</p>
+          <p className="line-clamp-3 text-sm text-zinc-500">{description}</p>
         </div>
 
         <Link
