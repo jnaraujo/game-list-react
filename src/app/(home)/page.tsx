@@ -33,6 +33,8 @@ export default function Home() {
 
   useEffect(() => {
     if (!user) {
+      setFavorites(null)
+      setRatedGames(null)
       return
     }
 
