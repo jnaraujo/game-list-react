@@ -9,16 +9,21 @@ import { errorToMessage } from "@/helpers/error-helper"
 import Error from "@/components/Error"
 import Cards from "@/components/Layouts/Cards"
 import FavoriteFilter from "@/components/FavoriteFilter"
-import { getUserLikedGames } from "@/libs/storage"
+import { getUserLikedGames, getUserRatedGames } from "@/libs/storage"
+import SortByStars from "@/components/SortByStars"
 
 export default function Home() {
   const [games, setGames] = useState<ApiResponse>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [search, setSearch] = useState<string>("")
-  const [platform, setPlatform] = useState<string>("all")
+  const [genre, setGenre] = useState<string>("all")
   const [favorites, setFavorites] = useState<Record<string, boolean> | null>(
     null,
   )
+  const [ratedGames, setRatedGames] = useState<Record<string, number> | null>(
+    null,
+  )
+  const [sort, setSort] = useState<"asc" | "desc" | null>(null)
   const [genres, setGenres] = useState<string[]>([])
   const [error, setError] = useState<string>("")
 
@@ -58,19 +63,51 @@ export default function Home() {
     }
   }
 
-  function handlePlatform(value: string) {
-    setPlatform(value)
+  function handleSortByStars(sort: "asc" | "desc" | null) {
+    setSort(sort)
+    getUserRatedGames().then((res) => {
+      if (res === null) {
+        res = {}
+      }
+      setRatedGames(res)
+    })
+  }
+
+  function handleGenre(value: string) {
+    setGenre(value)
   }
 
   const filteredGames = useMemo(() => {
     return games.filter((game) => {
+      const doesGameTitleIncludesSearch = game.title
+        .toLowerCase()
+        .includes(search.toLowerCase())
+      const doesGameGenreIncludesGenre =
+        genre === "all" || game.genre.includes(genre)
+      const doesGameIsFavorite = favorites === null || favorites[game.id]
+
       return (
-        game.title.toLowerCase().includes(search.toLowerCase()) &&
-        (platform === "all" || game.genre.includes(platform)) &&
-        (favorites === null || favorites[game.id])
+        doesGameTitleIncludesSearch &&
+        doesGameGenreIncludesGenre &&
+        doesGameIsFavorite
       )
     })
-  }, [games, platform, search, favorites])
+  }, [games, genre, search, favorites])
+
+  const sortedGames = useMemo(() => {
+    return filteredGames.sort((a, b) => {
+      const aRating = ratedGames?.[a.id] ?? 0
+      const bRating = ratedGames?.[b.id] ?? 0
+
+      if (sort === "asc") {
+        return aRating - bRating
+      } else if (sort == "desc") {
+        return bRating - aRating
+      } else {
+        return a.title.localeCompare(b.title)
+      }
+    })
+  }, [filteredGames, sort, ratedGames])
 
   return (
     <main className="flex min-h-screen flex-col items-center">
@@ -87,8 +124,9 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
           <SearchInput onChange={handleSearch} />
           <div className="flex w-full gap-2 md:w-fit">
-            <Filter items={genres} onChange={handlePlatform} />
+            <Filter items={genres} onChange={handleGenre} />
             <FavoriteFilter onChange={handleFavorite} />
+            <SortByStars onChange={handleSortByStars} />
           </div>
         </div>
       </section>
@@ -96,7 +134,7 @@ export default function Home() {
       {error ? (
         <Error message={error} />
       ) : (
-        <Cards games={filteredGames} isLoading={isLoading} />
+        <Cards games={sortedGames} isLoading={isLoading} />
       )}
     </main>
   )

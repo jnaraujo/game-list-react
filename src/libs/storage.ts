@@ -18,6 +18,19 @@ export async function getGameUserRating(gameId: number) {
   return null
 }
 
+export async function getUserRatedGames() {
+  const userId = auth.currentUser?.uid
+  const ratingRef = ref(db, `ratings/${userId}`)
+
+  const snapshot = await get(ratingRef)
+
+  if (snapshot.exists()) {
+    return snapshot.val()
+  }
+
+  return null
+}
+
 export async function setGameUserRating(gameId: number, rating: number) {
   const userId = auth.currentUser?.uid
   const ratingRef = ref(db, `ratings/${userId}/${gameId}`)
