@@ -23,7 +23,7 @@ export default function Cards({
   return (
     <section className="container my-8 flex">
       {isLoading ? (
-        <div className="grid w-full gap-8 lg:grid-cols-3">
+        <div className="grid w-full gap-16 lg:grid-cols-3">
           <CardSkeleton />
           <CardSkeleton />
           <CardSkeleton />
