@@ -23,7 +23,7 @@ export default function Modal({ children, open, onClose }: ModalProps) {
       />
       <dialog
         open={open}
-        className="fixed inset-0 z-50 max-h-[90vh] w-full max-w-[500px]  overflow-y-auto rounded-md bg-white shadow-lg"
+        className="fixed inset-0 z-50 max-h-[90vh] w-full max-w-[95vw] overflow-y-auto  rounded-md bg-white shadow-lg md:max-w-[500px]"
       >
         <div className="flex flex-col">
           <button
