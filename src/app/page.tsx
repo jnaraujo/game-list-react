@@ -8,12 +8,17 @@ import type { AxiosError } from "axios"
 import { errorToMessage } from "@/helpers/error-helper"
 import Error from "@/components/Error"
 import Cards from "@/components/Layouts/Cards"
+import FavoriteFilter from "@/components/FavoriteFilter"
+import { getUserLikedGames } from "@/libs/storage"
 
 export default function Home() {
   const [games, setGames] = useState<ApiResponse>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [search, setSearch] = useState<string>("")
   const [platform, setPlatform] = useState<string>("all")
+  const [favorites, setFavorites] = useState<Record<string, boolean> | null>(
+    null,
+  )
   const [genres, setGenres] = useState<string[]>([])
   const [error, setError] = useState<string>("")
 
@@ -40,6 +45,16 @@ export default function Home() {
     setSearch(value)
   }
 
+  function handleFavorite(isFavorite: boolean) {
+    if (isFavorite) {
+      getUserLikedGames().then((res) => {
+        setFavorites(res)
+      })
+    } else {
+      setFavorites(null)
+    }
+  }
+
   function handlePlatform(value: string) {
     setPlatform(value)
   }
@@ -48,10 +63,11 @@ export default function Home() {
     return games.filter((game) => {
       return (
         game.title.toLowerCase().includes(search.toLowerCase()) &&
-        (platform === "all" || game.genre.includes(platform))
+        (platform === "all" || game.genre.includes(platform)) &&
+        (favorites == null || favorites[game.id])
       )
     })
-  }, [games, platform, search])
+  }, [games, platform, search, favorites])
 
   return (
     <main className="flex min-h-screen flex-col items-center">
@@ -67,7 +83,10 @@ export default function Home() {
 
         <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
           <SearchInput onChange={handleSearch} />
-          <Filter items={genres} onChange={handlePlatform} />
+          <div className="flex w-full gap-2 md:w-fit">
+            <Filter items={genres} onChange={handlePlatform} />
+            <FavoriteFilter onChange={handleFavorite} />
+          </div>
         </div>
       </section>
 
