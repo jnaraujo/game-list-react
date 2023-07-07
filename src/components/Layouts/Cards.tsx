@@ -70,7 +70,7 @@ export default function Cards({
                         <div
                           key={key}
                           style={style}
-                          className="grid gap-8 lg:grid-cols-3"
+                          className="grid gap-16 lg:grid-cols-3"
                         >
                           {items.map((game) => (
                             <Card
