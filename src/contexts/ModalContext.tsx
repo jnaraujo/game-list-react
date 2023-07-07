@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from "react"
 
 interface ModalContextInterface {
   openModal: (content: React.ReactNode) => void
-  closeModal?: () => void
+  closeModal: () => void
 }
 
 export const ModalContext = createContext<ModalContextInterface>({

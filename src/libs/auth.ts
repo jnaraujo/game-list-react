@@ -13,10 +13,16 @@ export async function signUp(email: string, password: string) {
     email,
     password,
   )
+
   return userCredential.user
 }
 
 export async function signIn(email: string, password: string) {
   const userCredential = await signInWithEmailAndPassword(auth, email, password)
+
   return userCredential.user
+}
+
+export async function signOut() {
+  return await auth.signOut()
 }
