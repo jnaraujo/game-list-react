@@ -34,9 +34,10 @@ export default function FavoriteFilter({ onChange }: Props) {
         size={24}
         strokeWidth={2}
         className={clsx(
-          "text-zinc-400 transition-all duration-200 ease-in-out group-hover:scale-110",
+          "transition-all duration-200 ease-in-out group-hover:scale-110",
           {
-            "!fill-red-500 text-red-500": isFavorite,
+            "fill-red-500 text-red-500": isFavorite,
+            "text-zinc-400": !isFavorite,
           },
         )}
       />
