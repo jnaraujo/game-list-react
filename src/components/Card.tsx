@@ -41,8 +41,6 @@ export default function Card({
   const [liked, setLiked] = useState(false)
 
   useEffect(() => {
-    console.log("useEffect")
-
     getGameUserRating(gameId).then((rating) => {
       setRating(rating || -1)
     })
