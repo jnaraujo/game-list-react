@@ -6,6 +6,7 @@ interface Props extends React.HTMLAttributes<HTMLButtonElement> {
   asChild?: React.ReactNode
   children: React.ReactNode
   loading?: boolean
+  secondary?: boolean
 }
 
 export default function Button({
@@ -13,6 +14,7 @@ export default function Button({
   children,
   className,
   loading,
+  secondary,
   ...props
 }: Props) {
   const Component = asChild ? Slot : "button"
@@ -21,10 +23,13 @@ export default function Button({
     <Component
       disabled={loading}
       className={clsx(
-        "flex h-10 items-center justify-center rounded-lg bg-violet-800 font-medium text-zinc-50 transition-all duration-200 hover:bg-violet-600",
+        "flex h-10 items-center justify-center rounded-lg  font-medium  transition-all duration-200",
         className,
         {
           "cursor-not-allowed opacity-50": loading,
+          "bg-violet-800 text-zinc-50 hover:bg-violet-600": !secondary,
+          "border-2 border-violet-600 bg-transparent text-violet-600 hover:bg-zinc-100":
+            secondary,
         },
       )}
       {...props}
