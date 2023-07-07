@@ -11,6 +11,7 @@ import Cards from "@/components/Layouts/Cards"
 import FavoriteFilter from "@/components/FavoriteFilter"
 import { getUserLikedGames, getUserRatedGames } from "@/libs/storage"
 import SortByStars from "@/components/SortByStars"
+import { get } from "http"
 
 export default function Home() {
   const [games, setGames] = useState<ApiResponse>([])
@@ -23,11 +24,27 @@ export default function Home() {
   const [ratedGames, setRatedGames] = useState<Record<string, number> | null>(
     null,
   )
+  const [shouldFilterFavorites, setShouldFilterFavorites] =
+    useState<boolean>(false)
   const [sort, setSort] = useState<"asc" | "desc" | null>(null)
   const [genres, setGenres] = useState<string[]>([])
   const [error, setError] = useState<string>("")
 
   useEffect(() => {
+    getUserLikedGames().then((res) => {
+      if (res === null) {
+        res = {}
+      }
+      setFavorites(res)
+    })
+
+    getUserRatedGames().then((res) => {
+      if (res === null) {
+        res = {}
+      }
+      setRatedGames(res)
+    })
+
     setIsLoading(true)
     setError("")
     api
@@ -50,26 +67,23 @@ export default function Home() {
     setSearch(value)
   }
 
-  function handleFavorite(isFavorite: boolean) {
-    if (isFavorite) {
-      getUserLikedGames().then((res) => {
-        if (res === null) {
-          res = {}
-        }
-        setFavorites(res)
-      })
-    } else {
-      setFavorites(null)
-    }
+  function handleFavoriteFilter(isFavorite: boolean) {
+    getUserLikedGames().then((res) => {
+      if (res === null) {
+        res = {}
+      }
+      setFavorites(res)
+      setShouldFilterFavorites(isFavorite)
+    })
   }
 
   function handleSortByStars(sort: "asc" | "desc" | null) {
-    setSort(sort)
     getUserRatedGames().then((res) => {
       if (res === null) {
         res = {}
       }
       setRatedGames(res)
+      setSort(sort)
     })
   }
 
@@ -82,9 +96,11 @@ export default function Home() {
       const doesGameTitleIncludesSearch = game.title
         .toLowerCase()
         .includes(search.toLowerCase())
+
       const doesGameGenreIncludesGenre =
         genre === "all" || game.genre.includes(genre)
-      const doesGameIsFavorite = favorites === null || favorites[game.id]
+
+      const doesGameIsFavorite = !shouldFilterFavorites || favorites?.[game.id]
 
       return (
         doesGameTitleIncludesSearch &&
@@ -92,7 +108,7 @@ export default function Home() {
         doesGameIsFavorite
       )
     })
-  }, [games, genre, search, favorites])
+  }, [games, genre, search, favorites, shouldFilterFavorites])
 
   const sortedGames = useMemo(() => {
     return filteredGames.sort((a, b) => {
@@ -125,7 +141,7 @@ export default function Home() {
           <SearchInput onChange={handleSearch} />
           <div className="flex w-full gap-2 md:w-fit">
             <Filter items={genres} onChange={handleGenre} />
-            <FavoriteFilter onChange={handleFavorite} />
+            <FavoriteFilter onChange={handleFavoriteFilter} />
             <SortByStars onChange={handleSortByStars} />
           </div>
         </div>
@@ -134,7 +150,12 @@ export default function Home() {
       {error ? (
         <Error message={error} />
       ) : (
-        <Cards games={sortedGames} isLoading={isLoading} />
+        <Cards
+          games={sortedGames}
+          isLoading={isLoading}
+          likedGames={favorites}
+          ratedGames={ratedGames}
+        />
       )}
     </main>
   )

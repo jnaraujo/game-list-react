@@ -5,9 +5,16 @@ import Card from "../Card"
 interface Props {
   games: ApiResponse
   isLoading: boolean
+  likedGames?: Record<string, boolean> | null
+  ratedGames?: Record<string, number> | null
 }
 
-export default function Cards({ games, isLoading }: Props) {
+export default function Cards({
+  games,
+  isLoading,
+  ratedGames,
+  likedGames,
+}: Props) {
   const shouldShowGameNotFound = !isLoading && games.length === 0
   const shouldShowGameList = !isLoading && games.length > 0
 
@@ -33,6 +40,8 @@ export default function Cards({ games, isLoading }: Props) {
               platform={game.platform}
               releaseDate={new Date(game.release_date)}
               url={game.freetogame_profile_url}
+              isLiked={likedGames?.[game.id] ?? false}
+              rating={ratedGames?.[game.id] ?? -1}
             />
           ))
         : null}

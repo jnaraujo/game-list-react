@@ -4,12 +4,7 @@ import Link from "next/link"
 import Rating from "./Rating"
 import { useAuthContext } from "@/contexts/AuthContext"
 import { useModalContext } from "@/contexts/ModalContext"
-import {
-  setGameUserRating,
-  getGameUserRating,
-  setGameUserLike,
-  getGameUserLike,
-} from "@/libs/storage"
+import { setGameUserRating, setGameUserLike } from "@/libs/storage"
 import { useEffect, useState } from "react"
 import Like from "./Like"
 import RequestLogin from "./RequestLogin"
@@ -23,6 +18,8 @@ interface CardProps {
   genre: string
   releaseDate: Date
   url: string
+  isLiked?: boolean
+  rating?: number
 }
 
 export default function Card({
@@ -34,21 +31,21 @@ export default function Card({
   genre,
   releaseDate,
   url,
+  isLiked = false,
+  rating: initialRating = -1,
 }: CardProps) {
   const { user } = useAuthContext()
   const { openModal } = useModalContext()
-  const [rating, setRating] = useState(-1)
-  const [liked, setLiked] = useState(false)
+  const [rating, setRating] = useState(initialRating)
+  const [liked, setLiked] = useState(isLiked)
 
   useEffect(() => {
-    getGameUserRating(gameId).then((rating) => {
-      setRating(rating || -1)
-    })
+    setRating(initialRating)
+  }, [initialRating])
 
-    getGameUserLike(gameId).then((liked) => {
-      setLiked(liked || false)
-    })
-  }, [gameId])
+  useEffect(() => {
+    setLiked(isLiked)
+  }, [isLiked])
 
   function onRatingClick(rating: number) {
     if (!user) {
