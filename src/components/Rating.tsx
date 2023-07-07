@@ -19,14 +19,14 @@ export default function Rating({ count, onClick, rating }: Props) {
   }, [rating])
 
   return (
-    <div className="flex items-center gap-[1px] rounded-md bg-zinc-100 p-[3px]">
+    <div className="flex w-fit items-center gap-1 rounded-md">
       {Array.from({
         length: count,
       }).map((_, index) => (
         <Star
           key={index}
           color="#ffd100"
-          size={20}
+          size={22}
           strokeWidth={1.5}
           fill={index <= starIndex ? "#ffd100" : "transparent"}
           className="cursor-pointer transition-all duration-200 ease-in-out hover:scale-125"

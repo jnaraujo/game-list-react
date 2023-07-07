@@ -94,7 +94,7 @@ export default function Card({
 
       <div className="flex flex-1 flex-col justify-between p-2">
         <div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col-reverse justify-between gap-1 md:flex-row md:items-center">
             <span className="block text-sm text-zinc-400">
               {genre} | {releaseDate.getFullYear()}
             </span>
