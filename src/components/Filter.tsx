@@ -28,6 +28,7 @@ export default function Filter({ onChange, items }: FilterProps) {
         <Select.Content
           className="rounded-md bg-zinc-50 shadow-md"
           position="popper"
+          sideOffset={5}
         >
           <Select.Viewport className="min-w-[6rem] p-2">
             <Select.Group>
