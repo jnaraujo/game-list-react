@@ -1,5 +1,5 @@
 import { Star } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 interface Props {
   onClick: (index: number) => void
@@ -7,12 +7,16 @@ interface Props {
   count: number
 }
 
-export default function Rating({ count, onClick, rating = -1 }: Props) {
-  const [starIndex, setStarIndex] = useState(rating)
+export default function Rating({ count, onClick, rating }: Props) {
+  const [starIndex, setStarIndex] = useState(-1)
 
   function handleOnClick(index: number) {
-    onClick(index)
+    onClick(index + 1)
   }
+
+  useEffect(() => {
+    setStarIndex(rating - 1)
+  }, [rating])
 
   return (
     <div className="flex items-center gap-[1px] rounded-md bg-zinc-100 p-[3px]">
@@ -30,7 +34,7 @@ export default function Rating({ count, onClick, rating = -1 }: Props) {
             setStarIndex(index)
           }}
           onMouseLeave={() => {
-            setStarIndex(rating)
+            setStarIndex(rating - 1)
           }}
           onClick={() => {
             handleOnClick(index)

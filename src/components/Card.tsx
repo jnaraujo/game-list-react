@@ -5,8 +5,11 @@ import Rating from "./Rating"
 import { useAuthContext } from "@/contexts/AuthContext"
 import LoginForm from "./Auth/LoginForm"
 import { useModalContext } from "@/contexts/ModalContext"
+import { setGameUserRating, getGameUserRating } from "@/libs/storage"
+import { useEffect, useState } from "react"
 
 interface CardProps {
+  id: number
   title: string
   description: string
   image: string
@@ -17,6 +20,7 @@ interface CardProps {
 }
 
 export default function Card({
+  id: gameId,
   title,
   description,
   image,
@@ -27,12 +31,26 @@ export default function Card({
 }: CardProps) {
   const { user } = useAuthContext()
   const { openModal } = useModalContext()
+  const [rating, setRating] = useState(-1)
+
+  useEffect(() => {
+    console.log("useEffect")
+
+    getGameUserRating(gameId)
+      .then((rating) => {
+        setRating(rating || -1)
+      })
+      .catch((err) => console.error(err))
+  }, [gameId])
 
   function onRatingClick(rating: number) {
     if (!user) {
       openModal(<LoginForm />)
       return
     }
+
+    setGameUserRating(gameId, rating)
+    setRating(rating)
   }
 
   return (
@@ -57,7 +75,7 @@ export default function Card({
             <span className="block text-sm text-zinc-400">
               {genre} | {releaseDate.getFullYear()}
             </span>
-            <Rating count={5} onClick={onRatingClick} rating={2} />
+            <Rating count={5} onClick={onRatingClick} rating={rating} />
           </div>
           <h3 className="mt-1 line-clamp-2 font-bold text-zinc-900">{title}</h3>
           <p className="line-clamp-4 text-sm text-zinc-500">{description}</p>

@@ -25,6 +25,7 @@ export default function Cards({ games, isLoading }: Props) {
         ? games.map((game, index) => (
             <Card
               key={index}
+              id={game.id}
               title={game.title}
               description={game.short_description}
               genre={game.genre}
