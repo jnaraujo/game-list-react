@@ -1,6 +1,6 @@
 "use client"
 import { ApiResponse } from "@/@types/api"
-import Filter from "../../components/Filter"
+import Select from "../../components/Select"
 import SearchInput from "../../components/SearchInput"
 import api from "@/libs/api"
 import { useEffect, useMemo, useState } from "react"
@@ -155,7 +155,7 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
           <SearchInput onChange={handleSearch} />
           <div className="flex w-full gap-2 md:w-fit">
-            <Filter items={genres} onChange={handleGenre} />
+            <Select items={genres} onChange={handleGenre} />
             <FavoriteFilter onChange={handleFavoriteFilter} />
             <SortByStars onChange={handleSortByStars} />
           </div>
