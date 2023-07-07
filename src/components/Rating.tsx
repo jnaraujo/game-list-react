@@ -12,7 +12,6 @@ export default function Rating({ count, onClick, rating = -1 }: Props) {
 
   function handleOnClick(index: number) {
     onClick(index)
-    rating = index
   }
 
   return (

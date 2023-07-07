@@ -2,6 +2,9 @@ import { ArrowUpRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import Rating from "./Rating"
+import { useAuthContext } from "@/contexts/AuthContext"
+import LoginForm from "./Auth/LoginForm"
+import { useModalContext } from "@/contexts/ModalContext"
 
 interface CardProps {
   title: string
@@ -22,6 +25,16 @@ export default function Card({
   releaseDate,
   url,
 }: CardProps) {
+  const { user } = useAuthContext()
+  const { openModal } = useModalContext()
+
+  function onRatingClick(rating: number) {
+    if (!user) {
+      openModal(<LoginForm />)
+      return
+    }
+  }
+
   return (
     <div className="group relative flex overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 ease-in-out hover:shadow-lg md:flex-col">
       <div className="overflow-hidden">
@@ -44,13 +57,7 @@ export default function Card({
             <span className="block text-sm text-zinc-400">
               {genre} | {releaseDate.getFullYear()}
             </span>
-            <Rating
-              count={5}
-              onClick={() => {
-                console.log("luizin")
-              }}
-              rating={2}
-            />
+            <Rating count={5} onClick={onRatingClick} rating={2} />
           </div>
           <h3 className="mt-1 line-clamp-2 font-bold text-zinc-900">{title}</h3>
           <p className="line-clamp-4 text-sm text-zinc-500">{description}</p>
