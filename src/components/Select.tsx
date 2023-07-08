@@ -8,26 +8,46 @@ import React, { forwardRef } from "react"
 interface FilterProps {
   onChange?: (value: string) => void
   items?: string[]
+  children?: React.ReactNode
+  defaultValue?: string
+  side?: "top" | "bottom" | "left" | "right"
+  align?: "center" | "end" | "start"
 }
 
-export default function Select({ onChange, items }: FilterProps) {
+export default function Select({
+  onChange,
+  items,
+  children,
+  defaultValue = "Todos",
+  side,
+  align,
+}: FilterProps) {
   return (
     <SelectComp.Root onValueChange={onChange} defaultValue="all">
       <SelectComp.Trigger
-        className={clsx(
-          "flex h-9 w-full cursor-pointer items-center justify-center gap-1 rounded-md bg-zinc-50 px-2 py-1 text-zinc-500 hover:bg-zinc-100 sm:w-60 md:w-40",
-        )}
-        aria-label="Food"
+        className={clsx({
+          "flex h-9 w-full cursor-pointer items-center justify-center gap-1 rounded-md bg-zinc-50 px-2 py-1 text-zinc-500 hover:bg-zinc-100 sm:w-60 md:w-40":
+            !children,
+        })}
+        asChild={!!children}
       >
-        <SelectComp.Value placeholder="Todos" />
-        <SelectComp.Icon>
-          <ChevronDown size={24} />
-        </SelectComp.Icon>
+        {children ? (
+          children
+        ) : (
+          <>
+            <SelectComp.Value placeholder={defaultValue} />
+            <SelectComp.Icon>
+              <ChevronDown size={24} />
+            </SelectComp.Icon>
+          </>
+        )}
       </SelectComp.Trigger>
       <SelectComp.Portal>
         <SelectComp.Content
           className="rounded-md bg-zinc-50 shadow-md"
           position="popper"
+          side={side}
+          align={align}
           sideOffset={5}
         >
           <SelectComp.Viewport className="min-w-[6rem] p-2">
@@ -50,10 +70,9 @@ const SelectItem = forwardRef<
   any,
   {
     value: string
-    defaultChecked?: boolean
     children: React.ReactNode
   }
->(({ children, value, defaultChecked }, forwardedRef) => {
+>(({ children, value }, forwardedRef) => {
   return (
     <SelectComp.Item
       className={
@@ -62,7 +81,7 @@ const SelectItem = forwardRef<
       value={value}
       ref={forwardedRef}
     >
-      <SelectComp.ItemIndicator className="absolute left-2" defaultChecked>
+      <SelectComp.ItemIndicator className="absolute left-2">
         <CheckIcon size={16} />
       </SelectComp.ItemIndicator>
       <SelectComp.ItemText>{children}</SelectComp.ItemText>

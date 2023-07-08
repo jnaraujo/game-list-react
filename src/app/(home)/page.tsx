@@ -12,6 +12,7 @@ import FavoriteFilter from "@/components/FavoriteFilter"
 import { getUserLikedGames, getUserRatedGames } from "@/libs/storage"
 import SortByStars from "@/components/SortByStars"
 import { useAuthContext } from "@/contexts/AuthContext"
+import { ChevronDown } from "lucide-react"
 
 export default function Home() {
   const { user } = useAuthContext()
@@ -157,7 +158,11 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
           <SearchInput onChange={handleSearch} />
           <div className="flex w-full gap-2 md:w-fit">
-            <Select items={genres} onChange={handleGenre} />
+            <Select
+              defaultValue="Todos"
+              items={genres}
+              onChange={handleGenre}
+            />
             <FavoriteFilter onChange={handleFavoriteFilter} />
             <SortByStars onChange={handleSortByStars} />
           </div>
