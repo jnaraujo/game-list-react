@@ -10,9 +10,8 @@ import Error from "@/components/Error"
 import Cards from "@/components/Layouts/Cards"
 import FavoriteFilter from "@/components/FavoriteFilter"
 import { getUserLikedGames, getUserRatedGames } from "@/libs/storage"
-import SortByStars from "@/components/SortByStars"
+import SortByRating from "@/components/SortByRating"
 import { useAuthContext } from "@/contexts/AuthContext"
-import { ChevronDown } from "lucide-react"
 
 export default function Home() {
   const { user } = useAuthContext()
@@ -91,7 +90,7 @@ export default function Home() {
     })
   }
 
-  function handleSortByStars(sort: "asc" | "desc" | null) {
+  function handleSortByRating(sort: "asc" | "desc" | null) {
     if (!user) {
       return
     }
@@ -164,7 +163,7 @@ export default function Home() {
               onChange={handleGenre}
             />
             <FavoriteFilter onChange={handleFavoriteFilter} />
-            <SortByStars onChange={handleSortByStars} />
+            <SortByRating onChange={handleSortByRating} />
           </div>
         </div>
       </section>

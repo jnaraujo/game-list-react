@@ -11,7 +11,7 @@ interface Props {
   onChange?: (sort: Sort) => void
 }
 
-export default function SortByStars({ onChange }: Props) {
+export default function SortByRating({ onChange }: Props) {
   const { user } = useAuthContext()
   const { openModal } = useModalContext()
 
@@ -39,14 +39,14 @@ export default function SortByStars({ onChange }: Props) {
     <Tooltip
       text={
         sort === null
-          ? "Ordenar por favoritos"
+          ? "Ordenar por avaliação"
           : sort === "desc"
-          ? "Ordenar do mais favoritado para o menos favoritado"
-          : "Ordenar do menos favoritado para o mais favoritado"
+          ? "Ordenar do melhor avaliado para o pior avaliado"
+          : "Ordenar do pior avaliado para o melhor avaliado"
       }
       placement="bottom"
     >
-      <div
+      <button
         className="group flex aspect-square h-9 cursor-pointer items-center justify-center rounded-md bg-zinc-50"
         onClick={handleClick}
       >
@@ -55,7 +55,7 @@ export default function SortByStars({ onChange }: Props) {
           strokeWidth={2}
           className="text-zinc-400 transition-all duration-200 ease-in-out group-hover:scale-110"
         />
-      </div>
+      </button>
     </Tooltip>
   )
 }
