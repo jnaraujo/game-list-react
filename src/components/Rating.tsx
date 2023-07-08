@@ -23,13 +23,8 @@ export default function Rating({ count, onClick, rating }: Props) {
       {Array.from({
         length: count,
       }).map((_, index) => (
-        <Star
+        <button
           key={index}
-          color="#ffd100"
-          size={22}
-          strokeWidth={1.5}
-          fill={index <= starIndex ? "#ffd100" : "transparent"}
-          className="cursor-pointer transition-all duration-200 ease-in-out hover:scale-125"
           onMouseEnter={() => {
             setStarIndex(index)
           }}
@@ -39,7 +34,15 @@ export default function Rating({ count, onClick, rating }: Props) {
           onClick={() => {
             handleOnClick(index)
           }}
-        />
+        >
+          <Star
+            color="#ffd100"
+            size={22}
+            strokeWidth={1.5}
+            fill={index <= starIndex ? "#ffd100" : "transparent"}
+            className="cursor-pointer transition-all duration-200 ease-in-out hover:scale-125"
+          />
+        </button>
       ))}
     </div>
   )
