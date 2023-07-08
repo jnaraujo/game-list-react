@@ -5,7 +5,7 @@ import clsx from "clsx"
 import { CheckIcon, ChevronDown } from "lucide-react"
 import React, { forwardRef } from "react"
 
-interface FilterProps {
+interface Props {
   onChange?: (value: string) => void
   items?: string[]
   children?: React.ReactNode
@@ -21,7 +21,7 @@ export default function Select({
   defaultValue = "Todos",
   side,
   align,
-}: FilterProps) {
+}: Props) {
   return (
     <SelectComp.Root onValueChange={onChange} defaultValue="all">
       <SelectComp.Trigger
