@@ -1,9 +1,8 @@
 "use client"
-import { ApiResponse } from "@/@types/api"
+import { Game } from "@/@types/api"
 import Select from "../../components/Select"
 import SearchInput from "../../components/SearchInput"
-import api from "@/libs/api"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import type { AxiosError } from "axios"
 import { errorToMessage } from "@/helpers/error-helper"
 import Error from "@/components/Error"
@@ -12,56 +11,79 @@ import FavoriteFilter from "@/components/FavoriteFilter"
 import { getUserLikedGames, getUserRatedGames } from "@/libs/storage"
 import SortByRating from "@/components/SortByRating"
 import { useAuthContext } from "@/contexts/AuthContext"
+import { filterGames, sortGames } from "@/helpers/home-helper"
+import { fetchGames } from "@/services/games-service"
+
+type Favorites = Record<string, boolean> | null
+type UserRating = Record<string, number> | null
+type Sort = "asc" | "desc" | null
 
 export default function Home() {
   const { user } = useAuthContext()
-  const [games, setGames] = useState<ApiResponse>([])
+  const [games, setGames] = useState<Game[]>([])
+  const [genres, setGenres] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [search, setSearch] = useState<string>("")
   const [genre, setGenre] = useState<string>("all")
-  const [favorites, setFavorites] = useState<Record<string, boolean> | null>(
-    null,
-  )
-  const [ratedGames, setRatedGames] = useState<Record<string, number> | null>(
-    null,
-  )
-  const [shouldFilterFavorites, setShouldFilterFavorites] =
-    useState<boolean>(false)
-  const [sort, setSort] = useState<"asc" | "desc" | null>(null)
-  const [genres, setGenres] = useState<string[]>([])
+  const [favorites, setFavorites] = useState<Favorites>(null)
+  const [userRating, setUserRating] = useState<UserRating>(null)
+  const [filterFavorites, setFilterFavorites] = useState<boolean>(false)
+  const [sort, setSort] = useState<Sort>(null)
   const [error, setError] = useState<string>("")
+
+  const fetchLikedGames = useCallback(
+    (shouldSortByFavorite: boolean) => {
+      if (!user) {
+        return
+      }
+
+      getUserLikedGames(user.uid).then((res) => {
+        if (res === null) {
+          res = {}
+        }
+        setFavorites(res)
+        setFilterFavorites(shouldSortByFavorite)
+      })
+    },
+    [user],
+  )
+
+  const fetchRating = useCallback(
+    (sort: Sort) => {
+      if (!user) {
+        return
+      }
+
+      getUserRatedGames(user.uid).then((res) => {
+        if (res === null) {
+          res = {}
+        }
+        setUserRating(res)
+        setSort(sort)
+      })
+    },
+    [user],
+  )
 
   useEffect(() => {
     if (!user) {
       setFavorites(null)
-      setRatedGames(null)
+      setUserRating(null)
       return
     }
 
-    getUserLikedGames(user?.uid).then((res) => {
-      if (res === null) {
-        res = {}
-      }
-      setFavorites(res)
-    })
-
-    getUserRatedGames(user.uid).then((res) => {
-      if (res === null) {
-        res = {}
-      }
-      setRatedGames(res)
-    })
-  }, [user])
+    fetchRating(null)
+    fetchLikedGames(false)
+  }, [fetchLikedGames, fetchRating, user])
 
   useEffect(() => {
     setIsLoading(true)
     setError("")
-    api
-      .get<ApiResponse>("/data")
+    fetchGames()
       .then((res) => {
-        setGames(res.data)
+        setGames(res)
 
-        const genres = res.data.map((game) => game.genre)
+        const genres = res.map(({ genre }) => genre)
         setGenres([...new Set(genres)])
       })
       .catch((err: AxiosError) => {
@@ -72,75 +94,21 @@ export default function Home() {
       })
   }, [])
 
-  function handleSearch(value: string) {
-    setSearch(value)
-  }
-
-  function handleFavoriteFilter(isFavorite: boolean) {
-    if (!user) {
-      return
-    }
-
-    getUserLikedGames(user.uid).then((res) => {
-      if (res === null) {
-        res = {}
-      }
-      setFavorites(res)
-      setShouldFilterFavorites(isFavorite)
-    })
-  }
-
-  function handleSortByRating(sort: "asc" | "desc" | null) {
-    if (!user) {
-      return
-    }
-
-    getUserRatedGames(user.uid).then((res) => {
-      if (res === null) {
-        res = {}
-      }
-      setRatedGames(res)
-      setSort(sort)
-    })
-  }
-
-  function handleGenre(value: string) {
-    setGenre(value)
-  }
-
   const filteredGames = useMemo(() => {
-    return games.filter((game) => {
-      const doesGameTitleIncludesSearch = game.title
-        .toLowerCase()
-        .includes(search.toLowerCase())
-
-      const doesGameGenreIncludesGenre =
-        genre === "all" || game.genre.includes(genre)
-
-      const doesGameIsFavorite = !shouldFilterFavorites || favorites?.[game.id]
-
-      return (
-        doesGameTitleIncludesSearch &&
-        doesGameGenreIncludesGenre &&
-        doesGameIsFavorite
-      )
+    return filterGames(games, {
+      search,
+      genre,
+      favorites,
+      shouldFilterFavorites: filterFavorites,
     })
-  }, [games, genre, search, favorites, shouldFilterFavorites])
+  }, [games, genre, search, favorites, filterFavorites])
 
   const sortedGames = useMemo(() => {
-    return filteredGames.sort((a, b) => {
-      const aRating = ratedGames?.[a.id] ?? 0
-      const bRating = ratedGames?.[b.id] ?? 0
-
-      if (sort === "asc") {
-        return aRating - bRating
-      } else if (sort == "desc") {
-        return bRating - aRating
-      } else {
-        return a.title.localeCompare(b.title)
-      }
+    return sortGames(filteredGames, {
+      rating: userRating,
+      sort,
     })
-  }, [filteredGames, sort, ratedGames])
+  }, [filteredGames, sort, userRating])
 
   return (
     <main className="flex min-h-screen flex-col items-center">
@@ -155,15 +123,11 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
-          <SearchInput onChange={handleSearch} />
+          <SearchInput onChange={setSearch} />
           <div className="flex w-full gap-2 md:w-fit">
-            <Select
-              defaultValue="Todos"
-              items={genres}
-              onChange={handleGenre}
-            />
-            <FavoriteFilter onChange={handleFavoriteFilter} />
-            <SortByRating onChange={handleSortByRating} />
+            <Select defaultValue="Todos" items={genres} onChange={setGenre} />
+            <FavoriteFilter onChange={fetchLikedGames} />
+            <SortByRating onChange={fetchRating} />
           </div>
         </div>
       </section>
@@ -175,7 +139,7 @@ export default function Home() {
           games={sortedGames}
           isLoading={isLoading}
           likedGames={favorites}
-          ratedGames={ratedGames}
+          ratedGames={userRating}
         />
       )}
     </main>

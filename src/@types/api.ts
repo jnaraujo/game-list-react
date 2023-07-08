@@ -1,4 +1,4 @@
-export type ApiResponse = {
+export type Game = {
   id: number
   title: string
   thumbnail: string
@@ -10,4 +10,6 @@ export type ApiResponse = {
   developer: string
   release_date: string
   freetogame_profile_url: string
-}[]
+}
+
+export type ApiResponse = Game[]
