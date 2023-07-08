@@ -21,7 +21,7 @@ export default function Cards({
   const shouldShowGameList = !isLoading && games.length > 0
 
   return (
-    <section className="container my-8 flex">
+    <section className="container my-8 flex min-h-[50vh]">
       {isLoading ? (
         <div className="grid w-full gap-16 lg:grid-cols-3">
           <CardSkeleton />
