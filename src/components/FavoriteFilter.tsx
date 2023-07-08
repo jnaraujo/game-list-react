@@ -28,7 +28,7 @@ export default function FavoriteFilter({ onChange }: Props) {
 
   return (
     <Tooltip text="Filtrar por favoritos" placement="bottom">
-      <div
+      <button
         className="group flex aspect-square h-9 cursor-pointer items-center justify-center rounded-md bg-zinc-50"
         onClick={handleIsFavorite}
       >
@@ -43,7 +43,7 @@ export default function FavoriteFilter({ onChange }: Props) {
             },
           )}
         />
-      </div>
+      </button>
     </Tooltip>
   )
 }
