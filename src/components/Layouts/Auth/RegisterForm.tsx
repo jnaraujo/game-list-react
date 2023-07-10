@@ -7,6 +7,7 @@ import { useState } from "react"
 import { FirebaseError } from "firebase/app"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useConfettiContext } from "@/contexts/ConfettiContext"
 
 interface FormData {
   email: string
@@ -15,6 +16,7 @@ interface FormData {
 
 export default function RegisterForm() {
   const Router = useRouter()
+  const { confetti } = useConfettiContext()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const {
@@ -28,6 +30,7 @@ export default function RegisterForm() {
     setLoading(true)
     try {
       await signUp(data.email, data.password)
+      confetti(3000)
       Router.push("/")
     } catch (error) {
       if (error instanceof FirebaseError) {
