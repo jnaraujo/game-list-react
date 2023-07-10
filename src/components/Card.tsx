@@ -68,7 +68,7 @@ export default function Card({
   }
 
   return (
-    <div className="group relative flex h-[200px] w-full overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 ease-in-out hover:shadow-lg md:h-[400px] md:flex-col">
+    <div className="group relative flex h-[200px] w-full animate-fadeIn overflow-hidden rounded-lg bg-white shadow-md transition-shadow duration-300 ease-in-out hover:shadow-lg md:h-[400px] md:flex-col">
       <div className="overflow-hidden">
         <Image
           src={image}
