@@ -1,4 +1,4 @@
-import RegisterForm from "@/components/Auth/RegisterForm"
+import RegisterForm from "@/components/Layouts/Auth/RegisterForm"
 
 export default function Register() {
   return (

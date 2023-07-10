@@ -1,8 +1,8 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import Button from "../Button"
-import { signIn } from "@/libs/auth"
+import Button from "../../Button"
+import { signUp } from "@/libs/auth"
 import { useState } from "react"
 import { FirebaseError } from "firebase/app"
 import Link from "next/link"
@@ -13,10 +13,9 @@ interface FormData {
   password: string
 }
 
-export default function LoginForm() {
-  const [loading, setLoading] = useState(false)
+export default function RegisterForm() {
   const Router = useRouter()
-
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const {
     handleSubmit,
@@ -28,11 +27,13 @@ export default function LoginForm() {
     setError(null)
     setLoading(true)
     try {
-      await signIn(data.email, data.password)
+      await signUp(data.email, data.password)
       Router.push("/")
     } catch (error) {
       if (error instanceof FirebaseError) {
-        setError("Usuário não encontrado.")
+        if (error.code === "auth/email-already-in-use") {
+          setError("Email já cadastrado.")
+        }
       }
     } finally {
       setLoading(false)
@@ -42,7 +43,7 @@ export default function LoginForm() {
   return (
     <div className="space-y-4">
       <h2 className="max-w-[250px] text-2xl font-semibold">
-        Faça login para continuar 👋
+        Crie sua conta 👋
       </h2>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-1">
@@ -70,6 +71,10 @@ export default function LoginForm() {
             className="rounded-md border border-gray-300 p-2"
             {...register("password", {
               required: "A senha é obrigatória",
+              minLength: {
+                value: 6,
+                message: "A senha deve ter no mínimo 6 caracteres",
+              },
             })}
           />
           {errors.password && (
@@ -85,9 +90,9 @@ export default function LoginForm() {
       </form>
 
       <p className="text-sm">
-        Não tem uma conta?{" "}
-        <Link className="text-blue-500" href="/auth/register">
-          Crie uma agora.
+        Já tem uma conta?{" "}
+        <Link className="text-blue-500" href="/auth/login">
+          Faça login.
         </Link>
       </p>
     </div>
