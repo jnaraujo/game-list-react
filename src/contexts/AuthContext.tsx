@@ -5,12 +5,12 @@ import { createContext, useContext, useEffect, useState } from "react"
 const auth = getAuth(app)
 
 interface AuthContextInterface {
-  user: User | null
+  user: User | null | undefined
 }
 
-export const AuthContext = createContext<AuthContextInterface>({
-  user: null,
-})
+export const AuthContext = createContext<AuthContextInterface>(
+  {} as AuthContextInterface,
+)
 
 export const useAuthContext = () => useContext(AuthContext)
 
@@ -19,7 +19,7 @@ export default function AuthProvider({
 }: {
   children: React.ReactNode
 }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<User | null>()
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {

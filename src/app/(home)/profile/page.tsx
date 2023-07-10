@@ -9,6 +9,7 @@ import {
   updateEmail,
   updateUserName,
 } from "@/libs/auth"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
@@ -20,25 +21,24 @@ type FormValues = {
 }
 
 export default function Profile() {
+  const Router = useRouter()
   const { user } = useAuthContext()
   const [loading, setLoading] = useState(false)
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm<FormValues>()
+  const { register, handleSubmit, watch, setValue } = useForm<FormValues>()
 
   const name = watch("name")
   const email = watch("email")
 
   useEffect(() => {
-    if (!user) return
+    if (user === undefined) return
+    if (user === null) {
+      Router.push("/auth/login")
+      return
+    }
 
     setValue("name", user.displayName || "")
     setValue("email", user.email || "")
-  }, [setValue, user])
+  }, [Router, setValue, user])
 
   const doesDisplayNameChanged = name !== user?.displayName
   const doesEmailChanged = email !== user?.email
@@ -46,10 +46,7 @@ export default function Profile() {
   const doesUserDataChanged = doesDisplayNameChanged || doesEmailChanged
 
   function handlePasswordReset() {
-    if (!user?.email)
-      return toast.error("Você precisa estar logado para fazer isso.")
-
-    sendPasswordResetEmail(user.email)
+    sendPasswordResetEmail(user?.email!)
     toast("Link de redefinição de senha enviado para o seu e-mail!", {
       icon: "📧",
     })
