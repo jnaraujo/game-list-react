@@ -24,7 +24,7 @@ export default function DropdownMenu({ children }: Props) {
         >
           <DropdownMenuComp.Group className="min-w-[6rem] p-2">
             <Item asChild>
-              <Link href="/profile">Seu perfil</Link>
+              <Link href="/profile">Meu perfil</Link>
             </Item>
             <Item asChild>
               <button onClick={handleLogout}>Sair</button>
