@@ -14,6 +14,7 @@ import { useAuthContext } from "@/contexts/AuthContext"
 import { filterGames, sortGames } from "@/helpers/home-helper"
 import { fetchGames } from "@/services/games-service"
 import animation from "@/styles/animation.module.css"
+import { toast } from "react-hot-toast"
 
 type Favorites = Record<string, boolean> | null
 type UserRating = Record<string, number> | null
@@ -38,13 +39,17 @@ export default function Home() {
         return
       }
 
-      getUserLikedGames(user.uid).then((res) => {
-        if (res === null) {
-          res = {}
-        }
-        setFavorites(res)
-        setFilterFavorites(shouldSortByFavorite)
-      })
+      getUserLikedGames(user.uid)
+        .then((res) => {
+          if (res === null) {
+            res = {}
+          }
+          setFavorites(res)
+          setFilterFavorites(shouldSortByFavorite)
+        })
+        .catch(() => {
+          toast.error("Erro ao buscar favoritos")
+        })
     },
     [user],
   )
@@ -55,13 +60,17 @@ export default function Home() {
         return
       }
 
-      getUserRatedGames(user.uid).then((res) => {
-        if (res === null) {
-          res = {}
-        }
-        setUserRating(res)
-        setSort(sort)
-      })
+      getUserRatedGames(user.uid)
+        .then((res) => {
+          if (res === null) {
+            res = {}
+          }
+          setUserRating(res)
+          setSort(sort)
+        })
+        .catch(() => {
+          toast.error("Erro ao buscar avaliações")
+        })
     },
     [user],
   )

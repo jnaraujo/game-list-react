@@ -8,6 +8,7 @@ import { setGameUserRating, setGameUserLike } from "@/libs/storage"
 import { useEffect, useState } from "react"
 import Like from "./Like"
 import RequestLogin from "./RequestLogin"
+import { toast } from "react-hot-toast"
 
 interface CardProps {
   id: number
@@ -54,7 +55,12 @@ export default function Card({
     }
 
     setGameUserRating(gameId, rating, user.uid)
-    setRating(rating)
+      .then(() => {
+        setRating(rating)
+      })
+      .catch(() => {
+        toast.error("Erro ao avaliar o jogo")
+      })
   }
 
   function onLikeClick(isLiked: boolean) {
@@ -64,7 +70,12 @@ export default function Card({
     }
 
     setGameUserLike(gameId, isLiked, user.uid)
-    setLiked(isLiked)
+      .then(() => {
+        setLiked(isLiked)
+      })
+      .catch(() => {
+        toast.error("Erro ao curtir o jogo")
+      })
   }
 
   return (
