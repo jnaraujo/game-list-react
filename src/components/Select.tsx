@@ -12,6 +12,7 @@ interface Props {
   defaultValue?: string
   side?: "top" | "bottom" | "left" | "right"
   align?: "center" | "end" | "start"
+  label?: string
 }
 
 export default function Select({
@@ -21,6 +22,7 @@ export default function Select({
   defaultValue = "Todos",
   side,
   align,
+  label,
 }: Props) {
   return (
     <SelectComp.Root onValueChange={onChange} defaultValue="all">
@@ -35,7 +37,7 @@ export default function Select({
           children
         ) : (
           <>
-            <SelectComp.Value placeholder={defaultValue} />
+            <SelectComp.Value placeholder={defaultValue} aria-label={label} />
             <SelectComp.Icon>
               <ChevronDown size={24} />
             </SelectComp.Icon>

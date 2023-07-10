@@ -31,6 +31,7 @@ export default function FavoriteFilter({ onChange }: Props) {
       <button
         className="group flex aspect-square h-9 cursor-pointer items-center justify-center rounded-md bg-zinc-50"
         onClick={handleIsFavorite}
+        aria-label="Filtrar por favoritos"
       >
         <Heart
           size={24}

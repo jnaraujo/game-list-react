@@ -49,6 +49,7 @@ export default function SortByRating({ onChange }: Props) {
       <button
         className="group flex aspect-square h-9 cursor-pointer items-center justify-center rounded-md bg-zinc-50"
         onClick={handleClick}
+        aria-label="Ordenar por avaliação"
       >
         <Icon
           size={24}

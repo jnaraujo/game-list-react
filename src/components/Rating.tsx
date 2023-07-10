@@ -34,6 +34,7 @@ export default function Rating({ count, onClick, rating }: Props) {
           onClick={() => {
             handleOnClick(index)
           }}
+          aria-label={`Avaliação ${index + 1} de ${count}`}
         >
           <Star
             color="#ffd100"

@@ -13,6 +13,7 @@ export default function Like({ isLiked, onClick }: Props) {
       onClick={() => {
         onClick(!isLiked)
       }}
+      aria-label="Curtir"
     >
       <Heart
         size={24}

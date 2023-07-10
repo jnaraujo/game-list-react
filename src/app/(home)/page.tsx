@@ -128,7 +128,12 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
           <SearchInput onChange={setSearch} />
           <div className="flex w-full gap-2 md:w-fit">
-            <Select defaultValue="Todos" items={genres} onChange={setGenre} />
+            <Select
+              defaultValue="Todos"
+              items={genres}
+              onChange={setGenre}
+              label="Gênero"
+            />
             <FavoriteFilter onChange={fetchLikedGames} />
             <SortByRating onChange={fetchRating} />
           </div>
