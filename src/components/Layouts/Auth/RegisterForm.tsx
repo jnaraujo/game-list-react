@@ -85,7 +85,7 @@ export default function RegisterForm() {
         {error && <span className="text-red-500">{error}</span>}
 
         <Button className="mt-2" loading={loading}>
-          Entrar
+          Criar conta
         </Button>
       </form>
 
