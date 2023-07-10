@@ -1,8 +1,7 @@
 "use client"
 
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import ReactConfetti from "react-confetti"
-import { useWindowSize } from "react-use"
 
 interface ConfettiContextInterface {
   confetti: (duration?: number) => void
@@ -20,6 +19,17 @@ export default function ConfettiProvider({
   children: React.ReactNode
 }) {
   const [show, setShow] = useState<boolean>(false)
+  const [screen, setScreen] = useState<{ width: number; height: number }>({
+    width: 500,
+    height: 500,
+  })
+
+  useEffect(() => {
+    setScreen({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    })
+  }, [])
 
   function confetti(duration = 5000) {
     setShow(true)
@@ -29,15 +39,15 @@ export default function ConfettiProvider({
     }, duration)
   }
 
-  const numberOfPieces = window.innerWidth > 600 ? 500 : 200
+  const numberOfPieces = screen.width > 600 ? 500 : 200
 
   return (
     <ConfettiContext.Provider value={{ confetti }}>
       {children}
 
       <ReactConfetti
-        width={window.innerWidth}
-        height={window.innerHeight}
+        width={screen.width}
+        height={screen.height}
         style={{
           position: "fixed",
           pointerEvents: "none",
