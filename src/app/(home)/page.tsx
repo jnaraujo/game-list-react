@@ -13,6 +13,7 @@ import SortByRating from "@/components/SortByRating"
 import { useAuthContext } from "@/contexts/AuthContext"
 import { filterGames, sortGames } from "@/helpers/home-helper"
 import { fetchGames } from "@/services/games-service"
+import animation from "@/styles/animation.module.css"
 
 type Favorites = Record<string, boolean> | null
 type UserRating = Record<string, number> | null
@@ -112,7 +113,9 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center">
-      <section className="flex w-full flex-col items-center gap-4 bg-violet-800 px-4 py-16 text-white">
+      <section
+        className={`flex w-full flex-col items-center gap-4 bg-violet-800 bg-gamepad-pattern px-4 py-16 text-white ${animation["bg-animation"]}`}
+      >
         <div>
           <h1 className="text-center text-3xl font-bold text-zinc-100">
             Game Search App
