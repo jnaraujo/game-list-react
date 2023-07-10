@@ -9,6 +9,7 @@ import {
   updateEmail,
   updateUserName,
 } from "@/libs/auth"
+import clsx from "clsx"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -24,7 +25,14 @@ export default function Profile() {
   const Router = useRouter()
   const { user } = useAuthContext()
   const [loading, setLoading] = useState(false)
-  const { register, handleSubmit, watch, setValue } = useForm<FormValues>()
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    setError,
+    formState: { errors },
+  } = useForm<FormValues>()
 
   const name = watch("name")
   const email = watch("email")
@@ -72,6 +80,12 @@ export default function Profile() {
         })
       }
     } catch (error: any) {
+      if (error.code === "auth/wrong-password") {
+        setError("password", {
+          type: "manual",
+          message: "Senha incorreta.",
+        })
+      }
       toast.error(errorToMessage(error))
     } finally {
       setLoading(false)
@@ -124,7 +138,12 @@ export default function Profile() {
               </label>
               <input
                 id="password"
-                className="flex-1 rounded-md border border-gray-300 p-2"
+                className={clsx(
+                  "flex-1 rounded-md border border-gray-300 p-2",
+                  {
+                    "!border-red-500 outline-none": errors.password,
+                  },
+                )}
                 type="password"
                 placeholder="Senha"
                 {...register("password", {
