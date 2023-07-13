@@ -57,12 +57,13 @@ export default function Cards({
                     tabIndex={-1}
                     rowRenderer={({ index, key, style }) => {
                       const items = []
+                      const initialIndex = index * itemsPerRow
+                      const finalIndex = Math.min(
+                        initialIndex + itemsPerRow,
+                        ITEMS_COUNT,
+                      )
 
-                      for (
-                        let i = index * itemsPerRow;
-                        i < Math.min(itemsPerRow * (index + 1), ITEMS_COUNT);
-                        i++
-                      ) {
+                      for (let i = initialIndex; i < finalIndex; i++) {
                         items.push(games[i])
                       }
 
