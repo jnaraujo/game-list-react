@@ -1,58 +1,44 @@
 "use client"
 import Select from "../../components/Select"
 import SearchInput from "../../components/SearchInput"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import Error from "@/components/Error"
 import Cards from "@/components/Layouts/Cards"
 import FavoriteFilter from "@/components/FavoriteFilter"
-import { getUserLikedGames, getUserRatedGames } from "@/libs/storage"
 import SortByRating from "@/components/SortByRating"
 import { useAuthContext } from "@/contexts/AuthContext"
 import { filterGames, sortGames } from "@/helpers/home-helper"
 import animation from "@/styles/animation.module.css"
-import { toast } from "react-hot-toast"
 import useGames from "@/hooks/useGames"
 import useFavorite from "@/hooks/useFavorite"
+import useRating from "@/hooks/useRating"
 
-type Favorites = Record<string, boolean> | null
-type UserRating = Record<string, number> | null
 type Sort = "asc" | "desc" | null
 
 export default function Home() {
   const { user } = useAuthContext()
   const { error, games, genres, isLoading } = useGames()
   const { favorites, fetchFavorites } = useFavorite(user?.uid)
+  const { fetchRating, rating } = useRating(user?.uid)
+
   const [search, setSearch] = useState<string>("")
   const [genre, setGenre] = useState<string>("all")
-  const [userRating, setUserRating] = useState<UserRating>(null)
   const [filterFavorites, setFilterFavorites] = useState<boolean>(false)
   const [sort, setSort] = useState<Sort>(null)
-
-  const fetchRating = useCallback(
-    (sort: Sort) => {
-      if (!user) {
-        return
-      }
-
-      getUserRatedGames(user.uid)
-        .then((res) => {
-          if (res === null) {
-            res = {}
-          }
-          setUserRating(res)
-          setSort(sort)
-        })
-        .catch(() => {
-          toast.error("Erro ao buscar avaliações")
-        })
-    },
-    [user],
-  )
 
   function handleFilterFavorites(isChecked: boolean) {
     setFilterFavorites(isChecked)
     if (isChecked) {
       fetchFavorites()
+    }
+  }
+
+  function handleRatingChange(sort: Sort) {
+    console.log(sort)
+
+    setSort(sort)
+    if (sort) {
+      fetchRating()
     }
   }
 
@@ -67,10 +53,10 @@ export default function Home() {
 
   const sortedGames = useMemo(() => {
     return sortGames(filteredGames, {
-      rating: userRating,
+      rating,
       sort,
     })
-  }, [filteredGames, sort, userRating])
+  }, [filteredGames, sort, rating])
 
   return (
     <main className="flex min-h-screen flex-col items-center">
@@ -96,7 +82,7 @@ export default function Home() {
               label="Gênero"
             />
             <FavoriteFilter onChange={handleFilterFavorites} />
-            <SortByRating onChange={fetchRating} />
+            <SortByRating onChange={handleRatingChange} />
           </div>
         </div>
       </section>
@@ -108,7 +94,7 @@ export default function Home() {
           games={sortedGames}
           isLoading={isLoading}
           likedGames={favorites}
-          ratedGames={userRating}
+          ratedGames={rating}
         />
       )}
     </main>
