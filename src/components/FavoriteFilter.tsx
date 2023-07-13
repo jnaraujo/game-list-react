@@ -27,11 +27,11 @@ export default function FavoriteFilter({ onChange }: Props) {
   }
 
   return (
-    <Tooltip text="Filtrar por favoritos" placement="bottom">
+    <Tooltip text="Mostrar somente curtidos" placement="bottom">
       <button
         className="group flex aspect-square h-9 cursor-pointer items-center justify-center rounded-md bg-zinc-50"
         onClick={handleIsFavorite}
-        aria-label="Filtrar por favoritos"
+        aria-label="Mostrar somente curtidos"
       >
         <Heart
           size={24}
