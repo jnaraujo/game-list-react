@@ -12,6 +12,7 @@ import { filterGames, sortGames } from "@/helpers/home-helper"
 import animation from "@/styles/animation.module.css"
 import { toast } from "react-hot-toast"
 import useGames from "@/hooks/useGames"
+import useFavorite from "@/hooks/useFavorite"
 
 type Favorites = Record<string, boolean> | null
 type UserRating = Record<string, number> | null
@@ -20,33 +21,12 @@ type Sort = "asc" | "desc" | null
 export default function Home() {
   const { user } = useAuthContext()
   const { error, games, genres, isLoading } = useGames()
+  const { favorites, fetchFavorites } = useFavorite(user?.uid)
   const [search, setSearch] = useState<string>("")
   const [genre, setGenre] = useState<string>("all")
-  const [favorites, setFavorites] = useState<Favorites>(null)
   const [userRating, setUserRating] = useState<UserRating>(null)
   const [filterFavorites, setFilterFavorites] = useState<boolean>(false)
   const [sort, setSort] = useState<Sort>(null)
-
-  const fetchLikedGames = useCallback(
-    (shouldSortByFavorite: boolean) => {
-      if (!user) {
-        return
-      }
-
-      getUserLikedGames(user.uid)
-        .then((res) => {
-          if (res === null) {
-            res = {}
-          }
-          setFavorites(res)
-          setFilterFavorites(shouldSortByFavorite)
-        })
-        .catch(() => {
-          toast.error("Erro ao buscar favoritos")
-        })
-    },
-    [user],
-  )
 
   const fetchRating = useCallback(
     (sort: Sort) => {
@@ -69,16 +49,12 @@ export default function Home() {
     [user],
   )
 
-  useEffect(() => {
-    if (!user) {
-      setFavorites(null)
-      setUserRating(null)
-      return
+  function handleFilterFavorites(isChecked: boolean) {
+    setFilterFavorites(isChecked)
+    if (isChecked) {
+      fetchFavorites()
     }
-
-    fetchRating(null)
-    fetchLikedGames(false)
-  }, [fetchLikedGames, fetchRating, user])
+  }
 
   const filteredGames = useMemo(() => {
     return filterGames(games, {
@@ -119,7 +95,7 @@ export default function Home() {
               onChange={setGenre}
               label="Gênero"
             />
-            <FavoriteFilter onChange={fetchLikedGames} />
+            <FavoriteFilter onChange={handleFilterFavorites} />
             <SortByRating onChange={fetchRating} />
           </div>
         </div>
