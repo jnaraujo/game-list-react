@@ -100,8 +100,8 @@ export default function Card({
             <span className="block text-sm text-zinc-400">
               {genre} | {releaseDate.getFullYear()}
             </span>
-            <div className="flex justify-between gap-4 md:justify-normal">
-              <Rating count={5} onClick={onRatingClick} rating={rating} />
+            <div className="flex justify-between gap-3 md:justify-normal">
+              <Rating count={4} onClick={onRatingClick} rating={rating} />
               <Like isLiked={liked} onClick={onLikeClick} />
             </div>
           </div>
