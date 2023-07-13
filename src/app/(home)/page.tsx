@@ -18,8 +18,8 @@ type Sort = "asc" | "desc" | null
 export default function Home() {
   const { user } = useAuthContext()
   const { error, games, genres, isLoading } = useGames()
-  const { favorites, fetchFavorites } = useFavorite(user?.uid)
-  const { fetchRating, rating } = useRating(user?.uid)
+  const { favorites } = useFavorite(user?.uid)
+  const { rating } = useRating(user?.uid)
 
   const [search, setSearch] = useState<string>("")
   const [genre, setGenre] = useState<string>("all")
@@ -28,16 +28,10 @@ export default function Home() {
 
   function handleFilterFavorites(isChecked: boolean) {
     setFilterFavorites(isChecked)
-    if (isChecked) {
-      fetchFavorites()
-    }
   }
 
   function handleRatingChange(sort: Sort) {
     setSort(sort)
-    if (sort) {
-      fetchRating()
-    }
   }
 
   const filteredGames = useMemo(() => {

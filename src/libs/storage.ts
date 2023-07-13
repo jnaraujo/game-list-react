@@ -1,4 +1,4 @@
-import { getDatabase, ref, get, set, remove } from "firebase/database"
+import { getDatabase, ref, get, set, remove, onValue } from "firebase/database"
 import app from "./firebase"
 
 const db = getDatabase(app)
@@ -25,6 +25,17 @@ export async function getUserRatedGames(userId: string) {
   }
 
   return null
+}
+
+export async function listenToUserRatedGames(
+  userId: string,
+  callback: (games: Record<string, number> | null) => void,
+) {
+  const ratingRef = ref(db, `ratings/${userId}`)
+
+  return onValue(ratingRef, (snapshot) => {
+    callback(snapshot.val())
+  })
 }
 
 export async function setGameUserRating(
@@ -70,4 +81,14 @@ export async function getUserLikedGames(userId: string) {
     return snapshot.val()
   }
   return null
+}
+
+export async function listenToUserLikedGames(
+  userId: string,
+  callback: (games: Record<string, boolean> | null) => void,
+) {
+  const likeRef = ref(db, `likes/${userId}`)
+  return onValue(likeRef, (snapshot) => {
+    callback(snapshot.val())
+  })
 }

@@ -1,28 +1,33 @@
-import { getUserLikedGames } from "@/libs/storage"
-import { useCallback, useEffect, useState } from "react"
+import { listenToUserLikedGames } from "@/libs/storage"
+import { useEffect, useState } from "react"
 import { toast } from "react-hot-toast"
 
 export default function useFavorite(userId: string | undefined) {
   const [favorites, setFavorites] = useState<Record<string, boolean>>({})
 
-  const fetchFavorites = useCallback(() => {
-    if (!userId) return
+  useEffect(() => {
+    let unsubscribe = () => {}
+    async function fetch() {
+      if (!userId) return
 
-    getUserLikedGames(userId)
-      .then((res) => {
-        if (res === null) {
-          res = {}
-        }
-        setFavorites(res)
-      })
-      .catch(() => {
+      try {
+        unsubscribe = await listenToUserLikedGames(userId, (games) => {
+          if (games === null) {
+            games = {}
+          }
+          setFavorites(games)
+        })
+      } catch (error) {
         toast.error("Erro ao buscar favoritos")
-      })
+      }
+    }
+
+    fetch()
+
+    return () => {
+      unsubscribe()
+    }
   }, [userId])
 
-  useEffect(() => {
-    fetchFavorites()
-  }, [fetchFavorites])
-
-  return { favorites, fetchFavorites }
+  return { favorites }
 }
