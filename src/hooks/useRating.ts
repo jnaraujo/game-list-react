@@ -26,8 +26,6 @@ export default function useRating(userId: string | undefined) {
     fetch()
 
     return () => {
-      console.log(unsubscribe)
-
       unsubscribe()
     }
   }, [userId])
