@@ -1,10 +1,7 @@
 "use client"
-import { Game } from "@/@types/api"
 import Select from "../../components/Select"
 import SearchInput from "../../components/SearchInput"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import type { AxiosError } from "axios"
-import { errorToMessage } from "@/helpers/error-helper"
 import Error from "@/components/Error"
 import Cards from "@/components/Layouts/Cards"
 import FavoriteFilter from "@/components/FavoriteFilter"
@@ -12,9 +9,9 @@ import { getUserLikedGames, getUserRatedGames } from "@/libs/storage"
 import SortByRating from "@/components/SortByRating"
 import { useAuthContext } from "@/contexts/AuthContext"
 import { filterGames, sortGames } from "@/helpers/home-helper"
-import { fetchGames } from "@/services/games-service"
 import animation from "@/styles/animation.module.css"
 import { toast } from "react-hot-toast"
+import useGames from "@/hooks/useGames"
 
 type Favorites = Record<string, boolean> | null
 type UserRating = Record<string, number> | null
@@ -22,16 +19,13 @@ type Sort = "asc" | "desc" | null
 
 export default function Home() {
   const { user } = useAuthContext()
-  const [games, setGames] = useState<Game[]>([])
-  const [genres, setGenres] = useState<string[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const { error, games, genres, isLoading } = useGames()
   const [search, setSearch] = useState<string>("")
   const [genre, setGenre] = useState<string>("all")
   const [favorites, setFavorites] = useState<Favorites>(null)
   const [userRating, setUserRating] = useState<UserRating>(null)
   const [filterFavorites, setFilterFavorites] = useState<boolean>(false)
   const [sort, setSort] = useState<Sort>(null)
-  const [error, setError] = useState<string>("")
 
   const fetchLikedGames = useCallback(
     (shouldSortByFavorite: boolean) => {
@@ -85,24 +79,6 @@ export default function Home() {
     fetchRating(null)
     fetchLikedGames(false)
   }, [fetchLikedGames, fetchRating, user])
-
-  useEffect(() => {
-    setIsLoading(true)
-    setError("")
-    fetchGames()
-      .then((res) => {
-        setGames(res)
-
-        const genres = res.map(({ genre }) => genre)
-        setGenres([...new Set(genres)])
-      })
-      .catch((err: AxiosError) => {
-        setError(errorToMessage(err))
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
-  }, [])
 
   const filteredGames = useMemo(() => {
     return filterGames(games, {
