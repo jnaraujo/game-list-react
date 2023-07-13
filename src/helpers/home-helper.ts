@@ -37,6 +37,10 @@ interface SortGamesParams {
 
 export function sortGames(games: Game[], { rating, sort }: SortGamesParams) {
   return games.sort((a, b) => {
+    if (!sort) {
+      return a.title.localeCompare(b.title)
+    }
+
     const aRating = rating?.[a.id] ?? 0
     const bRating = rating?.[b.id] ?? 0
 
