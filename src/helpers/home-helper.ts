@@ -1,5 +1,4 @@
 import { Game } from "@/@types/api"
-import { useState } from "react"
 
 interface FilterGameParams {
   search: string
@@ -13,19 +12,20 @@ export function filterGames(
   { search, genre, shouldFilterFavorites, favorites }: FilterGameParams,
 ) {
   return games.filter((game) => {
-    const doesGameTitleIncludesSearch = game.title
+    const doesTitleIncludesSearch = game.title
       .toLowerCase()
       .includes(search.toLowerCase())
 
     const doesGameGenreIncludesGenre =
-      genre === "all" || game.genre.includes(genre)
+      genre === "all" || game.genre.toLowerCase() === genre.toLowerCase()
 
-    const doesGameIsFavorite = !shouldFilterFavorites || favorites?.[game.id]
+    const isFavorite = favorites?.[game.id]
+    const shouldShowFavorite = !shouldFilterFavorites || isFavorite
 
     return (
-      doesGameTitleIncludesSearch &&
+      doesTitleIncludesSearch &&
       doesGameGenreIncludesGenre &&
-      doesGameIsFavorite
+      shouldShowFavorite
     )
   })
 }
