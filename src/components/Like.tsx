@@ -9,7 +9,7 @@ interface Props {
 export default function Like({ isLiked, onClick }: Props) {
   return (
     <button
-      className="cursor-pointer shadow-sm transition-all duration-200 ease-in-out hover:scale-110"
+      className="cursor-pointer transition-all duration-200 ease-in-out hover:scale-110"
       onClick={() => {
         onClick(!isLiked)
       }}
