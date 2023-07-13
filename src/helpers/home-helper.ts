@@ -40,10 +40,14 @@ export function sortGames(games: Game[], { rating, sort }: SortGamesParams) {
     const aRating = rating?.[a.id] ?? 0
     const bRating = rating?.[b.id] ?? 0
 
-    if (sort === "asc") {
-      return aRating - bRating
-    } else if (sort == "desc") {
-      return bRating - aRating
+    if (aRating && bRating) {
+      if (sort === "asc") {
+        return aRating - bRating
+      } else if (sort == "desc") {
+        return bRating - aRating
+      } else {
+        return a.title.localeCompare(b.title)
+      }
     } else {
       return a.title.localeCompare(b.title)
     }
