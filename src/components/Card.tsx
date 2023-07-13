@@ -24,7 +24,7 @@ interface CardProps {
 }
 
 export default function Card({
-  id: gameId,
+  id,
   title,
   description,
   image,
@@ -54,7 +54,7 @@ export default function Card({
       return
     }
 
-    setGameUserRating(gameId, rating, user.uid)
+    setGameUserRating(id, rating, user.uid)
       .then(() => {
         setRating(rating)
       })
@@ -69,7 +69,7 @@ export default function Card({
       return
     }
 
-    setGameUserLike(gameId, isLiked, user.uid)
+    setGameUserLike(id, isLiked, user.uid)
       .then(() => {
         setLiked(isLiked)
       })
