@@ -34,8 +34,6 @@ export default function Home() {
   }
 
   function handleRatingChange(sort: Sort) {
-    console.log(sort)
-
     setSort(sort)
     if (sort) {
       fetchRating()
