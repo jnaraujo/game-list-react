@@ -94,17 +94,16 @@ export default function Card({
         {platform}
       </span>
 
-      <div className="absolute right-1 top-1">
-        <Like isLiked={liked} onClick={onLikeClick} />
-      </div>
-
       <div className="flex flex-1 flex-col justify-between p-2">
         <div>
           <div className="flex flex-col-reverse justify-between gap-1 md:flex-row md:items-center">
             <span className="block text-sm text-zinc-400">
               {genre} | {releaseDate.getFullYear()}
             </span>
-            <Rating count={5} onClick={onRatingClick} rating={rating} />
+            <div className="flex justify-between gap-4 md:justify-normal">
+              <Rating count={5} onClick={onRatingClick} rating={rating} />
+              <Like isLiked={liked} onClick={onLikeClick} />
+            </div>
           </div>
           <h3 className="mt-1 line-clamp-2 font-bold text-zinc-900">{title}</h3>
           <p className="line-clamp-3 text-sm text-zinc-500">{description}</p>
