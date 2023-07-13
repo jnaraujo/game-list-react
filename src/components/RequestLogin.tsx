@@ -18,13 +18,8 @@ export default function RequestLogin() {
         </p>
       </div>
       <div className="flex w-full gap-2">
-        <Button asChild className="flex-1" secondary>
-          <Link href="/auth/register" onClick={closeModal}>
-            Crie uma conta
-          </Link>
-        </Button>
         <Button asChild className="flex-1">
-          <Link href="/auth/login" onClick={closeModal}>
+          <Link href="/auth" onClick={closeModal}>
             Fazer login
           </Link>
         </Button>

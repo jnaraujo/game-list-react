@@ -4,8 +4,6 @@ import { useForm } from "react-hook-form"
 import Button from "../../Button"
 import { signIn } from "@/libs/auth"
 import { useState } from "react"
-import { FirebaseError } from "firebase/app"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 interface FormData {
@@ -13,7 +11,11 @@ interface FormData {
   password: string
 }
 
-export default function LoginForm() {
+interface Props {
+  onRegisterClick: () => void
+}
+
+export default function LoginForm({ onRegisterClick }: Props) {
   const [loading, setLoading] = useState(false)
   const Router = useRouter()
 
@@ -30,10 +32,8 @@ export default function LoginForm() {
     try {
       await signIn(data.email, data.password)
       Router.push("/")
-    } catch (error) {
-      if (error instanceof FirebaseError) {
-        setError("Usuário não encontrado.")
-      }
+    } catch (_) {
+      setError("Usuário não encontrado.")
     } finally {
       setLoading(false)
     }
@@ -86,9 +86,9 @@ export default function LoginForm() {
 
       <p className="text-sm">
         Não tem uma conta?{" "}
-        <Link className="text-blue-500" href="/auth/register">
+        <button className="text-blue-500" onClick={onRegisterClick}>
           Crie uma agora.
-        </Link>
+        </button>
       </p>
     </div>
   )

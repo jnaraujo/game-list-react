@@ -4,8 +4,6 @@ import { useForm } from "react-hook-form"
 import Button from "../../Button"
 import { signUp } from "@/libs/auth"
 import { useState } from "react"
-import { FirebaseError } from "firebase/app"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useConfettiContext } from "@/contexts/ConfettiContext"
 
@@ -14,7 +12,11 @@ interface FormData {
   password: string
 }
 
-export default function RegisterForm() {
+interface Props {
+  onLoginClick: () => void
+}
+
+export default function RegisterForm({ onLoginClick }: Props) {
   const Router = useRouter()
   const { confetti } = useConfettiContext()
   const [loading, setLoading] = useState(false)
@@ -32,11 +34,9 @@ export default function RegisterForm() {
       await signUp(data.email, data.password)
       confetti(3000)
       Router.push("/")
-    } catch (error) {
-      if (error instanceof FirebaseError) {
-        if (error.code === "auth/email-already-in-use") {
-          setError("Email já cadastrado.")
-        }
+    } catch (error: any) {
+      if (error.code === "auth/email-already-in-use") {
+        setError("Email já cadastrado.")
       }
     } finally {
       setLoading(false)
@@ -94,9 +94,9 @@ export default function RegisterForm() {
 
       <p className="text-sm">
         Já tem uma conta?{" "}
-        <Link className="text-blue-500" href="/auth/login">
+        <button className="text-blue-500" onClick={onLoginClick}>
           Faça login.
-        </Link>
+        </button>
       </p>
     </div>
   )

@@ -39,7 +39,7 @@ export default function UpdateProfile() {
   useEffect(() => {
     if (user === undefined) return
     if (user === null) {
-      Router.push("/auth/login")
+      Router.push("/auth")
       return
     }
 

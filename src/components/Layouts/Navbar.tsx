@@ -25,17 +25,8 @@ export default function Navbar() {
           </div>
         ) : (
           <div className="flex items-center gap-4">
-            <Link
-              href="/auth/login"
-              className="text-zinc-50 hover:text-zinc-200"
-            >
+            <Link href="/auth" className="text-zinc-50 hover:text-zinc-200">
               Login
-            </Link>
-            <Link
-              href="/auth/register"
-              className="text-zinc-50 hover:text-zinc-200"
-            >
-              Criar conta
             </Link>
           </div>
         )}
