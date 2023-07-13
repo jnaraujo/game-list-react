@@ -38,10 +38,10 @@ export default function Cards({
                 const PADDING = 32
 
                 const ITEM_HEIGHT =
-                  (width > Breakpoints.md ? 400 : 200) + PADDING
+                  (window.innerWidth > Breakpoints.md ? 400 : 200) + PADDING
                 const ITEMS_COUNT = games.length
 
-                const itemsPerRow = width > Breakpoints.lg ? 3 : 1
+                const itemsPerRow = window.innerWidth > Breakpoints.lg ? 3 : 1
                 const rowCount = Math.ceil(ITEMS_COUNT / itemsPerRow)
 
                 return (
