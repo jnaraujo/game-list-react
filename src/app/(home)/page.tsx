@@ -1,7 +1,7 @@
 "use client"
 import Select from "../../components/Select"
 import SearchInput from "../../components/SearchInput"
-import { useMemo, useState } from "react"
+import { useMemo, useState, useTransition } from "react"
 import Error from "@/components/Error"
 import Cards from "@/components/Layouts/Cards"
 import FavoriteFilter from "@/components/FavoriteFilter"
@@ -16,6 +16,8 @@ import useRating from "@/hooks/useRating"
 type Sort = "asc" | "desc" | null
 
 export default function Home() {
+  const [_, startTransition] = useTransition()
+
   const { user } = useAuthContext()
   const { error, games, genres, isLoading } = useGames()
   const { favorites } = useFavorite(user?.uid)
@@ -26,6 +28,12 @@ export default function Home() {
   const [filterFavorites, setFilterFavorites] = useState<boolean>(false)
   const [sort, setSort] = useState<Sort>(null)
 
+  function handleSearch(value: string) {
+    startTransition(() => {
+      setSearch(value)
+    })
+  }
+
   function handleFilterFavorites(isChecked: boolean) {
     setFilterFavorites(isChecked)
   }
@@ -35,19 +43,27 @@ export default function Home() {
   }
 
   const filteredGames = useMemo(() => {
-    return filterGames(games, {
+    console.time("filter")
+    const g = filterGames(games, {
       search,
       genre,
       favorites,
       shouldFilterFavorites: filterFavorites,
     })
+    console.timeEnd("filter")
+
+    return g
   }, [games, genre, search, favorites, filterFavorites])
 
   const sortedGames = useMemo(() => {
-    return sortGames(filteredGames, {
+    console.time("sort")
+    const s = sortGames(filteredGames, {
       rating,
       sort,
     })
+    console.timeEnd("sort")
+
+    return s
   }, [filteredGames, sort, rating])
 
   return (
@@ -65,7 +81,7 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col items-center justify-center gap-2 sm:flex-row">
-          <SearchInput onChange={setSearch} />
+          <SearchInput onChange={handleSearch} />
           <div className="flex w-full gap-2 md:w-fit">
             <Select
               defaultValue="Todos"

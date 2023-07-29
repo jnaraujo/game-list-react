@@ -54,6 +54,7 @@ export default function Cards({
                     height={height}
                     rowCount={rowCount}
                     rowHeight={ITEM_HEIGHT}
+                    overscanRowCount={3}
                     tabIndex={-1}
                     rowRenderer={({ index, key, style }) => {
                       const items = []
